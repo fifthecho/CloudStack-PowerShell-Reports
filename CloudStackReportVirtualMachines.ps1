@@ -17,16 +17,19 @@ Param(
     $zoneid
 )
 
-Import-Module CloudStackClient
-$parameters = Import-CloudStackConfig
+Import-Module CloudStackReportsClient
+$parameters = Import-CloudstackReportsConfig
+$EMails = $parameters[3]
+$mailbody = ""
+$hostname = $env:COMPUTERNAME
 
 if ($parameters -ne 1) {
-	$cloud = New-CloudStack -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
+	$cloud = New-CloudStackReports -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
 	if ($zoneid) {
-		$job = Get-CloudStack -cloudStack $cloud -command listVirtualMachines -options zoneid=$zoneid
+		$job = Get-CloudStackReports -cloudStack $cloud -command listVirtualMachines -options zoneid=$zoneid
 	}
 	else {
-		$job = Get-CloudStack -cloudStack $cloud -command listVirtualMachines 
+		$job = Get-CloudStackReports -cloudStack $cloud -command listVirtualMachines 
 	}
 	$allVMs = $job.listvirtualmachinesresponse
 
@@ -36,8 +39,11 @@ if ($parameters -ne 1) {
         $VMDISPLAYNAME = $VM.displayname
         $VMZONENAME = $VM.zonename
         $VMTEMPLATE = $VM.templatedisplaytext
-		Write-Host("Virtual Machine $VMDISPLAYNAME (ID: $VMID) is running '$VMTEMPLATE' in $VMZONENAME")
+		$mailbody += "Virtual Machine $VMDISPLAYNAME (ID: $VMID) is running '$VMTEMPLATE' in $VMZONENAME<br />`n"
 	}
+    Write-Debug "Mail body: `n$mailbody"
+    
+    Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Instance List" -BodyAsHtml -SmtpServer localhost
 }
 else {
 	Write-Error "Please configure the $env:userprofile\cloud-settings.txt file"

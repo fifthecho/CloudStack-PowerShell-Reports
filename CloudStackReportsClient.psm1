@@ -2,7 +2,7 @@
 .SYNOPSIS
    A CloudStack/CloudPlatform API client.
 .DESCRIPTION
-   A feature-rich Apache CloudStack/Citrix CloudPlatform API client for issuing commands to the Cloud Management system.
+   A feature-rich Apache CloudStack/Citrix CloudPlatform API client for issuing commands to the Cloud Management system and e-mailing reports.
 .PARAMETER command
    The command parameter is MANDATORY and specifies which command you are wanting to run against the API.
 .PARAMETER options
@@ -21,7 +21,7 @@
 [VOID][System.Reflection.Assembly]::Load("System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
 $WebClient = New-Object net.WebClient
 
-function New-CloudStack{
+function New-CloudStackReports{
 	Param(
 			[Parameter(Mandatory = $true)]
 	        [String] $apiEndpoint
@@ -38,7 +38,7 @@ function New-CloudStack{
 	$cloudStack += $apiSecretKey
 	return $cloudStack
 }
-Export-ModuleMember -Function New-CloudStack
+Export-ModuleMember -Function New-CloudStackReports
 
 function calculateSignature{
 	Param(
@@ -64,7 +64,7 @@ function calculateSignature{
 }
 
 
-function Get-CloudStack{
+function Get-CloudStackReports{
 	Param(
 		[Parameter(Mandatory=$true)]
 		[String[]]
@@ -119,36 +119,46 @@ function Get-CloudStack{
 	
 }
 
-Export-ModuleMember -Function Get-CloudStack
+Export-ModuleMember -Function Get-CloudStackReports
 
-function Import-CloudStackConfig{
+function Import-CloudStackReportsConfig{
 	# Read configuration values for API Endpoint and keys
-	$ChkFile = "$env:userprofile\cloud-settings.txt" 
+	$ChkFile = "$env:userprofile\cloud-reports-settings.txt" 
 	$FileExists = (Test-Path $ChkFile -PathType Leaf)
 
 	If (!($FileExists)) 
 	{
 		Write-Error "Config file does not exist. Writing a basic config that you now need to customize."
-		Write-Output "[general]
-Address=http://(your URL):8080/client/api?
-ApiKey=(Your API Key)
-SecretKey=(Your Secret Key)" | Out-File "$env:userprofile\cloud-settings.txt"
+		Write-Output "[general]" | Out-File $ChkFile
+        Add-Content $ChkFile "`nAddress=http://(your URL):8080/client/api"
+        Add-Content $ChkFile "`nApiKey=(Your API Key)"
+        Add-Content $ChkFile "`nSecretKey=(Your Secret Key)"
+        Add-Content $ChkFile "`nEMail=(E-Mail Recipients, comma seperated)" 
 		Return 1
 	}
 	ElseIf ($FileExists)
 	{
-		Get-Content "$env:userprofile\cloud-settings.txt" | foreach-object -begin {$h=@{}} -process { $k = [regex]::split($_,'='); if(($k[0].CompareTo("") -ne 0) -and ($k[0].StartsWith("[") -ne $True)) { $h.Add($k[0], $k[1]) } }
+		Get-Content "$env:userprofile\cloud-reports-settings.txt" | foreach-object -begin {$h=@{}} -process { $k = [regex]::split($_,'='); if(($k[0].CompareTo("") -ne 0) -and ($k[0].StartsWith("[") -ne $True)) { $h.Add($k[0], $k[1]) } }
 		$ADDRESS=$h.Get_Item("Address")
 		$API_KEY=$h.Get_Item("ApiKey")
 		$SECRET_KEY=$h.Get_Item("SecretKey")
+        $EMAIL=$h.Get_Item("EMail")
 		Write-Debug "Address: $ADDRESS"
 		Write-Debug "API Key: $API_KEY"
 		Write-Debug "Secret Key: $SECRET_KEY"
+        Write-Debug "E-Mail: $EMAIL"
 		$config = @()
 		$config += $ADDRESS
 		$config += $API_KEY
 		$config += $SECRET_KEY
-		if (($ADDRESS -ne "http://(your URL:8080/client/api?") -and ($API_KEY -ne "(Your API Key)") -and ($SECRET_KEY -ne "(Your Secret Key)")) {
+        $RAW_EMAILS = $EMAIL.split(",")
+        $EMAILS = @()
+        foreach($MAIL in $RAW_EMAILS){
+            $EMAILS += $MAIL
+        }
+        $config += , $EMAILS
+        
+		if (($ADDRESS -ne "http://(your URL:8080/client/api?") -and ($API_KEY -ne "(Your API Key)") -and ($SECRET_KEY -ne "(Your Secret Key)" -and ($EMAIL -ne "(E-Mail Recipients, comma seperated)"))) {
 			return $config
 		}
 		else {
@@ -158,4 +168,4 @@ SecretKey=(Your Secret Key)" | Out-File "$env:userprofile\cloud-settings.txt"
 	}
 }
 
-Export-ModuleMember -Function Import-CloudstackConfig
+Export-ModuleMember -Function Import-CloudstackReportsConfig

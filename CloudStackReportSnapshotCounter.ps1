@@ -11,37 +11,44 @@
 # 2013/7/12  v1.0 created
 
 
-Import-Module CloudStackClient
-$parameters = Import-CloudStackConfig
+Import-Module CloudStackReportsClient
+$parameters = Import-CloudstackReportsConfig
+$EMails = $parameters[3]
+$mailbody = ""
+$hostname = $env:COMPUTERNAME
 
 if ($parameters -ne 1) {
-	$cloud = New-CloudStack -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
-    $volumeListJob = Get-CloudStack -cloudStack $cloud -command listVolumes -options type=ROOT
+	$cloud = New-CloudStackReports -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
+    $volumeListJob = Get-CloudStackReports -cloudStack $cloud -command listVolumes -options type=ROOT
     $volumes = $volumeListJob.listvolumesresponse.volume 
     foreach($v in $volumes){
         $volumeID = $v.id
         $volumeName = $v.name
-        $snapshotListJob = Get-CloudStack -cloudStack $cloud -command listSnapshots -options volumeid=$volumeID
+        $snapshotListJob = Get-CloudStackReports -cloudStack $cloud -command listSnapshots -options volumeid=$volumeID
         $snaps = $snapshotListJob.listsnapshotresponse
         $count = 0
         if ($snapshotListJob.listsnapshotsresponse.count){
             $count = $snapshotListJob.listsnapshotsresponse.count
         }
-        Write-Host "ROOT Volume $volumeName has $count snapshots"
+        $mailbody += "ROOT Volume $volumeName has $count snapshots<br />`n"
     }
-    $volumeListJob = Get-CloudStack -cloudStack $cloud -command listVolumes -options type=DATADISK
+    $mailbody +="<br />`n<br />"
+    $volumeListJob = Get-CloudStackReports -cloudStack $cloud -command listVolumes -options type=DATADISK
     $volumes = $volumeListJob.listvolumesresponse.volume 
     foreach($v in $volumes){
         $volumeID = $v.id
         $volumeName = $v.name
-        $snapshotListJob = Get-CloudStack -cloudStack $cloud -command listSnapshots -options volumeid=$volumeID
+        $snapshotListJob = Get-CloudStackReports -cloudStack $cloud -command listSnapshots -options volumeid=$volumeID
         $snaps = $snapshotListJob.listsnapshotresponse
         $count = 0
         if ($snapshotListJob.listsnapshotsresponse.count){
             $count = $snapshotListJob.listsnapshotsresponse.count
         }
-        Write-Host "DATADISK Volume $volumeName has $count snapshots"
+        $mailbody += "DATADISK Volume $volumeName has $count snapshots<br />`n"
     }
+    Write-Debug "Mail body: `n$mailbody"
+    
+    Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Snapshot Count" -BodyAsHtml -SmtpServer localhost
 }
 else {
 	Write-Error "Please configure the $env:userprofile\cloud-settings.txt file"
