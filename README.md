@@ -15,7 +15,7 @@ This module provides Cmdlets for:
 To install the module correctly, run the following in PowerShell:
 ```
 	$PSModulePath = $Env:PSModulePath -split ";" | Select -Index ([int][bool]$Global)
-	mkdir $PSModulePath\CloudStackClient
+	mkdir $PSModulePath\CloudStackReportsClient
 	Copy-Item .\CloudStackClient.psm1 $PSModulePath\CloudStackReportsClient\CloudStackReportsClient.psm1
 ```	
 
