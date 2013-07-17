@@ -35,7 +35,7 @@ $hostname = $env:COMPUTERNAME
 if ($parameters -ne 1) {
 	$cloud = New-CloudStackReports -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
 	$job = Get-CloudStackReports -cloudStack $cloud -command listSnapshots -options volumeid=$volume
-
+    Write-Debug "Job: $job"
 	if($snapshots = $job.listsnapshotsresponse.snapshot){
 	    $days = 0 - $days
 
@@ -52,12 +52,15 @@ if ($parameters -ne 1) {
 	            }
 	    
 	    }
+        if ($mailbody -eq "") {
+            $mailbody += "No snapshots to delete for volume <i>$volume</i> <br /> `n"
+        }
         Write-Debug "Mail body: `n$mailbody"
     
         Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Snapshot History Manager Job for Volume $volume" -BodyAsHtml -SmtpServer localhost
     }
     else {
-        $mailbody += "No snapshots to delete for volume $volume"
+        $mailbody += "Error fetching snapshots for volume <i>$volume</i> <br />`n"
         Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Snapshot History Manager Job for Volume $volume" -BodyAsHtml -SmtpServer localhost
     }
 }
