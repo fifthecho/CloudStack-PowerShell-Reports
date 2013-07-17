@@ -16,7 +16,7 @@ To install the module correctly, run the following in PowerShell:
 ```
 	$PSModulePath = $Env:PSModulePath -split ";" | Select -Index ([int][bool]$Global)
 	mkdir $PSModulePath\CloudStackReportsClient
-	Copy-Item .\CloudStackClient.psm1 $PSModulePath\CloudStackReportsClient\CloudStackReportsClient.psm1
+	Copy-Item .\*.psm1 $PSModulePath\CloudStackReportsClient\
 ```	
 
 Once the module is installed, it can be loaded via ```Import-Module CloudStackReportsClient```
