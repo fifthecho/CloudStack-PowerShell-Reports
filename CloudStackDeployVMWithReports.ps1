@@ -66,7 +66,7 @@ if ($parameters -ne 1) {
 
   if($job){
     $jobid = $job.deployvirtualmachineresponse.jobid
-    $mailbody += "Started VM Deployment job <i>$jobid</i> at $startTime for template <i>$templateid</i> <br />`n"
+    $mailbody += "Started VM Deployment job <i>$jobid</i> at $startTime for template <i>$templateid</i>.<br />`n"
     do {
       Write-Host -NoNewline "."
       $jobStatus = Get-CloudStack -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
@@ -82,10 +82,11 @@ if ($parameters -ne 1) {
       $vmid = $vm.id
       $ip = $vm.nic.ipaddress
       $password = $vm.password
-      $mailbody += "`nVM $vmid deployed. VM IP Address is $ip and Administrator password is $password"
+      
       $date = Get-Date
       $endTime = $date.ToShortTimeString()
-      $mailbody += "Completed at $endTime"
+      $mailbody += "`nCompleted at $endTime.<br /><br />"
+      $mailbody += "`nVM $vmid deployed. VM IP Address is <b>$ip</b> and Administrator password is <i>$password</i> <br />"
 
       Write-Debug "Mail body: `n$mailbody"
     
@@ -102,8 +103,8 @@ else {
 # SIG # Begin signature block
 # MIIRpQYJKoZIhvcNAQcCoIIRljCCEZICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUJ9d0LulN4aDKRmjJbcZjfQvz
-# 3fmggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUqvi6VTHy5234nw7HLEMlMmZ0
+# qVSggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
 # EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERp
 # Z2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2Vy
 # dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIw
@@ -182,17 +183,17 @@ else {
 # aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
 # YXRlIE9iamVjdCBDQQICCnYwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFH3o9kQLTFrFVnjhd/oC
-# CfH+ZuHsMA0GCSqGSIb3DQEBAQUABIICACMi9Fx/FWoIuZl0gbVzRUJgTmScsvuY
-# njHtpQmHwp+8EKvERakpdYo7qsj80+DeHUgDR/uwSKRyVu73UT+waqprR8j+4qLJ
-# 1A/ODsI+HJV1DCF6O1ufV+Fr2W0O0NzapZ2Iy/eV4kgaeP7DVFgtqoY35s3EjdQJ
-# EhUIrIaQr8kmlTPgWBRaQFyM3KNVZ/X9YtBlQJc+Nz1LXhhkTj6/7T8g9s59e0Cx
-# j4FU4JsqceDKOfGnP99RFdpxoCOEzZ53YV0/sDj2y7Ig09lOmErD4+00O5hHXHSb
-# A6JHTThV5JOmwtBRIrP6iCqfhSjstw5ZIynERwaGo7Nycy3UMcmP5jcX9A/tzCsl
-# +TeXkcZxUEgUR/OqKSmWFPopMuVrLENBVsscY6U3fxt8s3AQeMUL4yNxnLhKuZ/L
-# sMB4groVc1DxSOukxSDzquOX+gdYnxyYeL99CbGInCKWRxD2480J321/gIwMbvOv
-# yEAg7bsc0wUqSD6ruy/GDW/Y9wvdcSi3ZPLrsnAEHc3hsGkQKUdQ/j0aNgM+qHmn
-# fd7mDkfOuG/aW78cz+d/qmYm+7pR0uFP1d4L2G0qcCsEFbMZbb3DYmy4RhNoaRcQ
-# xf5Cz4+C6nGJKBnDoEvSp272kdk2tNY+HsHed05AoQ2k1K2MQb1qD2JdscvhP+uB
-# RniB7afmK1Do
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFHTBw3T/tIEnQBFkA6M3
+# QPfG9jT9MA0GCSqGSIb3DQEBAQUABIICAGWW+5/ImY9MeiXlJsejcJPYhwpa0Tww
+# lsOWyjjrKowtIrjmhIqS1xD/ttneAvC5AFiPooYlMCrQJGZvlJa/vw6hJsdh5cOv
+# TftirBABrVnlJ2qRxU8wkCn46/1g3WjylEV5b4Gq5HKYw5nNqTr8xrcizY0fbsjl
+# /R32bapfpljWAV+9e5hc0OzelVQtYX2dcLk29jH6BuWc1VlYpetzL8PhPTS2+w9g
+# scrwoUQdhWaVONnXnbO3gJpMSFIy6dRE+8a10cIb82LsxyeYXiGJogzlbl0/zOAU
+# IUIZfy8A1Pw1DjPQN3xVG2Y+UYjD+N2fho/TiGjrUIDS6K93BJ9J+yzgcZgPQPf7
+# Z9Qhm66nNXmS1GFI7+/Rs2illXUOQd06nAucDa/xIwLiQBM0wPkvxpibKMR3PCfM
+# W/5sQDk1CfyL9kEy94bMr1O2PzyK25gQFSnNRZNcSa6TmpI59AEh0LGaT94MCSk+
+# OzUtMoC+WNvKVZHkCLhLBFROCFVd5ISuhtqlLXyrgRqcGSrsZZf6jIjSYnCqE3p9
+# 2eskN5e8/zi2epHuntTvMzZLazO0K5v612EsHuXLKFP4fRQBnZHfJyDM2Az3FmJH
+# /YqUja6DgXYryuo/Lsw9keTwhJFO35TXhk0CuCnZ4AWaq/6ivW9yiaAQXl25IneK
+# /60efldxPngY
 # SIG # End signature block
