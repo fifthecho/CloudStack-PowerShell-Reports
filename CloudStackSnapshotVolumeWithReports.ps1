@@ -36,7 +36,7 @@ if ($parameters -ne 1) {
 	do {
 	    $jobStatus = Get-CloudStackReports -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
 	    Start-Sleep -Seconds 5
-        Write-Host -NoNewline " . "
+        Write-Host -NoNewline "."
 	    }
 	while ($jobStatus.queryasyncjobresultresponse.jobstatus -eq 0)
 	$statusCode = $jobStatus.queryasyncjobresultresponse.jobresultcode
@@ -58,8 +58,8 @@ else {
 # SIG # Begin signature block
 # MIIRpQYJKoZIhvcNAQcCoIIRljCCEZICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU4wREz5eyLE2oxdUPWRdSFDH0
-# o4uggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU+agOR6WyKDFADlArLXlVNk9r
+# 8Geggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
 # EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERp
 # Z2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2Vy
 # dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIw
@@ -138,17 +138,17 @@ else {
 # aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
 # YXRlIE9iamVjdCBDQQICCnYwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFPFkMuwLDm57BSqRv3RC
-# DtJjwr8EMA0GCSqGSIb3DQEBAQUABIICAGgVeRo/RkX7y67r7vjYAp//nAlxGONy
-# VI+RolkaYnnImR8LOPoDUGqk3gILwJPbrEDw7xNhvIKqYsbaSueCGmHVRRvL3SoW
-# NKLmCheo6X4jUGfDOuPhmvrpCfuWTjs6YbTW81YciX6m6/sRb3rfKT6yjBXKuV1D
-# OoFufdcm/wSncqyfP8BSnpXIQTzJzYrCy1PtYlIK6rYIb4gGWzTain73NnCW6Bb0
-# EPfI6b+9oAHBDFQgNytUDbJ4OQ/5z3SMEaAQSOwlupJqr/+wYqCfDkcdRYtQ7pd2
-# zRtc2wPBMcnn4GtQ1IgXceyE36GHHjGTcrzpBFdLhgF2HTxT1uVFHyVZ5Bq+NsJm
-# GRaFpJwceLGYd98580CPG3Hd8zIY1AXFHoSAotMDqdwNR426wKcwU45tU4tar4kl
-# 6KGDIad0z6dQr3EULIHiyeVQ9t98NvAxm+fEZPEyRSVrQe8H9e7smGAK1x7DRDzj
-# 4Ja9gQnv0i33aFTHkkC3lhdUgzsjzTOPufb+QOy8JYaoCmfuk9A5Y5a1ursjdu93
-# L0uU5NET+UfD4ovsmKjtlf3I+9190iTyXx1L4o8qGzPK7vx9mFy2WQoFEWWFJqeq
-# s5velcKLuArqvNVkSRPSR9uiSO1RO0qT1StYGP/LJpTa61op48ZxJSH3DsMcwvD/
-# W3z63+o9rReN
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFPPwziFpJpC5/tWFcFgI
+# 1WYCqFSoMA0GCSqGSIb3DQEBAQUABIICAI0oUg43YnDlfCGGU+EH35vB23l0q7c7
+# bKTOUMEZFUtGKSleeMbQ6plgFkGZXvTj78rsT+ezq3qf2j4xad1c+v+2u4jpKCmP
+# rlgQzCWSI/wfF6XLZZ1SRXShqghocAZAr24Gp0RrxlYneZVyANwcI2WUog3aL5l8
+# WgvNsYCpzQPzk4Z79dQryQ+4rJQ2LxFsbkJT5Dl73gyM+BwA5rN7+UrMrjyUiWYA
+# dfjYeip7ZOWEwfadApSsYtM1DknG5gqtK8Op5WEKDypgTWtOXh4I3G3sXWnTl4Km
+# R8tiSEfqAraHjjnaMg2cTIHf6603FgwEpWLuFqohPlbOX6cDfFz7wbLtjL168ydr
+# t3FJFORjm3LdwPfATRC2OE834YQCXJfOvrmIGmPspD3BC6R41K6N9v95oq1UjCGo
+# 17XIuuTr0G39UOCn0ns+M0zvawtdh6blxiu4UVbYfizOJKg+FvCyW9tCovpjPcli
+# mCx3Nybm77LMraUehHEcKiyWBwU8K1Ck1mo+rOlVezCxpswQposT5pb6MDDGtlsC
+# LiYqzDuoIM0SDvUpCCxacVV46agUR5c+jmLIPYs2Efo2PrNtuF4mJnwaWsK/UHCn
+# quRoosGQrh2EmsI1YPiKD2JU6YnUc3VSkSW4W33lQQ5aJWfgFHNhi5ot6+iu25Oa
+# IOWs0LZoplVH
 # SIG # End signature block
