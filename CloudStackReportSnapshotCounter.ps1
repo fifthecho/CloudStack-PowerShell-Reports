@@ -30,7 +30,7 @@ if ($parameters -ne 1) {
         if ($snapshotListJob.listsnapshotsresponse.count){
             $count = $snapshotListJob.listsnapshotsresponse.count
         }
-        $mailbody += "ROOT Volume $volumeName has $count snapshots<br />`n"
+        $mailbody += "ROOT Volume $volumeName (ID: $volumeID) has $count snapshots<br />`n"
     }
     $mailbody +="<br />`n<br />"
     $volumeListJob = Get-CloudStackReports -cloudStack $cloud -command listVolumes -options type=DATADISK
@@ -44,7 +44,7 @@ if ($parameters -ne 1) {
         if ($snapshotListJob.listsnapshotsresponse.count){
             $count = $snapshotListJob.listsnapshotsresponse.count
         }
-        $mailbody += "DATADISK Volume $volumeName has $count snapshots<br />`n"
+        $mailbody += "DATADISK Volume $volumeName (ID: $volumeID) has $count snapshots<br />`n"
     }
     Write-Debug "Mail body: `n$mailbody"
     
@@ -56,8 +56,8 @@ else {
 # SIG # Begin signature block
 # MIIRpQYJKoZIhvcNAQcCoIIRljCCEZICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU64G834CzuZdjcpuEBdCDLff9
-# p+2ggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUe3ezoqSlepqaRSINyH5TetV+
+# iAqggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
 # EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERp
 # Z2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2Vy
 # dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIw
@@ -136,17 +136,17 @@ else {
 # aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
 # YXRlIE9iamVjdCBDQQICCnYwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFJGQHcNZ7Q4jT5fDKrr+
-# GqdzT6JbMA0GCSqGSIb3DQEBAQUABIICAH17HsE6qrCDEPzYIEX9giRTeY0WywQO
-# /UheU7zvws69PWgjz5Fbounod+6k/jwv8EiCkoqfbs13EzNghOomynYckayCQnpA
-# 1xXpd55jAvVUxaPug77dYs1H+Fmxvd7o5vsgMhWIw739Iu6VA6TjVzKmwOeD4OE2
-# XKDaK0o2s2udOTEz5gPAWHkvBRNf3Kz/3wPHbBuKvR2UDu5QyqxT7+HI2kMaEjAR
-# q7PUBEkVF6A0e/MrdOS4CYy0UStUG3K61ie5w2vAt5C1YO+IgMLw1z3jPndWhL5E
-# srUx66EronwkznGM8PFJr1sNjN+Lkh4nza7nihi5/Ba355Eqe2961iu0wC9BowR5
-# RL5XKXmEX//SC8BAf4unU9+ZqI9KPtiSrf76cwyvEObcINgfnwFWpXhDI63NqI4g
-# U5B3/ir/XVjZD8WNzSr5hp6eW5Jw/sypkWDesHcQZ6DpAZaJeaWADKpDt0YIYZj5
-# DgkgKTGxLrg4seZ6l/7+5y7wUCiT29QAX7DPRVLPsfZtrLaFkc28HorD46aNrzse
-# AKetnDU+OGjfaxaPEZlFNWCzix5wwcmIcGi3GnK2B2RWqHp9w66VNuAMa+NNxf/P
-# MLdEaMnMB9G9m972f5roGvkZ2tKKClLpipdZg6ogHhCd0GlqzSUUrC7AX8rkGqiA
-# 6zYu5F5YO/wi
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFIsMlmdJ13aJuuVKc4NB
+# ElI0vqw3MA0GCSqGSIb3DQEBAQUABIICAH8Hzm486TenFPgitvoQs35EDf2f/5Ig
+# aRezwnDa9+gOsAtC3S11Szvc2FXYWsajAeB1IITBGD6qQg1Hr8RJfZbxG6Ys5x+3
+# 8TElTwp8GUwfygDZAE4cWP9TSyacUGE8/wquZ2LLmtD0PLP/TzuyCOI7egMnG5Cw
+# pB/fUm0SRwXyzDzbY3fqLEYx1FHggI2kPY7EgyodJu345ypmuUQSaa0RJK9XL0ol
+# B5Nl5yVPKW6zIMbNy5M5jnsVkBR1vPs2ROTxDzHp9ZHv+tzTWtBecL5xaUJfFIXs
+# nEwr8i7Maj4hywPgFtnYybnVxqQi63tAo7g7xWAZvIFHpuO4RsjBaiElCXG7kSBc
+# RG97mAvrB75RBVe2daI137tC6yXsJ1d2Fh8H2jNPfJWoIbt/sXH1o7nNXcDTuapl
+# lVc+0JY7bet1SBwdSNRkm0DANeolxpckm8bEmgO22DpWL+dHdaZzrHElBKpklUGL
+# 87jIkV0SJVo/GMggwH7Cn+LGPWiSTDHU8bgAH4dsTuw9hToz7en7bCdidETkTiEI
+# eV8YNmzSqrogKVz97VAPY3N4VkRk8XAs82NjUxXr+95+i6rXsWKDzjZmcK3fZjOe
+# gP+E0QW3pG5vE3JG2d3ZSRK6oxG05idGhRRk5yDhcS+cqPSLvicMRdN9lxvAUdyY
+# Sr5sFAtuC08B
 # SIG # End signature block
