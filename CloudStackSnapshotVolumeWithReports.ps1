@@ -37,8 +37,9 @@ if ($parameters -ne 1) {
 	    $jobStatus = Get-CloudStackReports -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
 	    Start-Sleep -Seconds 5
         Write-Host -NoNewline "."
-	    }
+	}
 	while ($jobStatus.queryasyncjobresultresponse.jobstatus -eq 0)
+    Write-Host " "
 	$statusCode = $jobStatus.queryasyncjobresultresponse.jobresultcode
 	if ($statusCode -ne 0) {
 	    $mailbody += "<h1>ERROR</h1> <h2>$jobStatus.queryasyncjobresultresponse.errortext</h2> <br />`n"
