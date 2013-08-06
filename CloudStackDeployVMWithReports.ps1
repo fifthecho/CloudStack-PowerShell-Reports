@@ -91,7 +91,7 @@ if ($parameters -ne 1) {
 
       Write-Debug "Mail body: `n$mailbody"
     
-      Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Snapshot Count" -BodyAsHtml -SmtpServer localhost
+      Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack VM Deployment" -BodyAsHtml -SmtpServer localhost
     }
 
   }
@@ -104,8 +104,8 @@ else {
 # SIG # Begin signature block
 # MIIRpQYJKoZIhvcNAQcCoIIRljCCEZICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUeHh1sLpLAa3mBX7GOdsrEASw
-# NuWggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUiKre9UezNYVCDjy1Al1gb1TQ
+# dVOggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
 # EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERp
 # Z2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2Vy
 # dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIw
@@ -184,17 +184,17 @@ else {
 # aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
 # YXRlIE9iamVjdCBDQQICCnYwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFAYCuxBhXrLCy2TGVNx0
-# CDr0O36kMA0GCSqGSIb3DQEBAQUABIICAGaxsG2X0nlP1gwHIDBUXCSpSXLnDOpq
-# GMll5XqkuKdDAUjaYi1s2BofZ0OdeO2c5K+o2JUxDK6LMpQgjWmbPPvb3zLhaX2P
-# VMa3wP1f+PlvCVbpCBVu+IEMxno0c+9h7fo2wJ/sMU1s1Amqw43sldjFWCE4+00A
-# RNnVDcwGpCQc1KtnE/bm5okLODA9f71lX+V0rtX5GjIHPXG9veY1XpJM8NE/e4pa
-# Korc1c0RY1Q5ymZs1Avp9pmgOKKUIBoOy1+Br8Xp7upb8I6PDOu4l5MV12ZkYbl/
-# BhkdDruwjCcWhwam6P9KEjypdraOBWQJj6jAJtC6UHnqeiIlBCS6cW1fxTpeB9ns
-# lm38QgWNYdCbF+wwbbD9nID9gO1eCprXejgSz5w+edQJ8GY5Q4p9nz5wRzn84gY7
-# ueVvbYOTbHuOTbgYHw9EeP9LtFiv9pZ9RDlg8GIp7mojg88hgVj0CImzGQX8e7Wy
-# DBgHnRjnKgi4wS4skZy0Q4Zs8cdwlgrrpcUtgWcpCYhqcVjy6X2uRxrzYkCMXJUu
-# h9lIZmKYeW8EG/p9mMRQ/dZoqXMgI6LtZCBEVMb6LVWVevA55hOa1tNUvtXQnf71
-# 4HAHMo0baFkrF2aN585koDYFFupfUSVcPPmAstksllW5l6gWtjBlcZ0MKMNsWI6o
-# 09LTG3AQu9jp
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFCjCV0FOk9FXoWSd23OU
+# UOqUmNGiMA0GCSqGSIb3DQEBAQUABIICAHxpcwKiFqToK9/MW2J8MLjunILM0ywq
+# uN5XVnGSGDavbAESmJk+ufSl5wIStPTEGY2rKvo6B6z1XtrAMF5eLjy5lzEyYO1L
+# obruVQ8DKCGdyQoH65z8HWiVf/JBeiF6LWb19v1PWJ7uO0t20pSrqjWagcXXi3kc
+# TcYZOELplP0tv0WoJ9JmDcvXcbJyJIwA2aPEBjzVLy8FVOkn05OqQvMZpcMfMz/i
+# EyhsmwSoRnaThpSD0ViY4hRdeDajcolr7OxDgSM46nqv7mRVPc9NM+cPVdW0lfOs
+# 5O9kSnUZxWF1dicPMOyMbWX8ngq7I5AIccq0nvJaCZXLZNQrXTLa0RaDqmA8KP0W
+# hfPd0gV2LrxwGCmSBtpVlc48sjTAM4VY0HHuP2TQnXYlTVO+34H1Uo0wVxIlwmdn
+# sjFtgd3cUMgefOZXozezaOzm+o2niub+zbp0rK9xoXbr6WmqCIpvw0giccmwYASX
+# 4fM93vSoIqicl1p+if2dcBFW0R4+Dlp21jUjSQJgBFEHWi6fXoFrwbTlUf1ziRhM
+# vKzBMnAV0COUzRnOZj+xaY+Xm98twu6ssdhJORxh3rH3qbrVRQNTFZBSG3UBUOC/
+# pXYKlWEJw8QhtlIDAJ+qdIWBCJW4hValBiJRu0pYvhu2hZbjdtWJsQ3qCsh34+eB
+# dqa1H/Y2i5Fx
 # SIG # End signature block
