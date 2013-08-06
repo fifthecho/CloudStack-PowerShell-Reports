@@ -4,7 +4,9 @@
 .DESCRIPTION
    A feature-rich Apache CloudStack/Citrix CloudPlatform API client for issuing commands to the Cloud Management system.
 .PARAMETER volume
-   The volume parameter is MANDATORY and specifies which volume or snapshot to create a template from.
+   The volume parameter specifies which volume to create a template from.
+.PARAMETER snapshot
+   The snapshot parameter specifies which snapshot to create a template from.
 .PARAMETER displaytext
    The volume parameter is MANDATORY and specifies which volume or snapshot to create a template from.
 .PARAMETER name
@@ -20,9 +22,13 @@
 
 
 Param(
-	[Parameter(Mandatory=$true)]
+	[Parameter(Mandatory=$false)]
 	[String]
     $volume
+    ,
+    [Parameter(Mandatory=$false)]
+	[String]
+    $snapshot
     ,
     [Parameter(Mandatory=$true)]
 	[String]
@@ -36,7 +42,7 @@ Param(
 	[String]
     $displaytext
     ,
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
 	[Bool]
     $passwordenabled
 )
@@ -47,37 +53,71 @@ $EMails = $parameters[3]
 $mailbody = ""
 $hostname = $env:COMPUTERNAME
 $displayname = ""
-if ($displaytext) {
-	$displayname = $displaytext
-}
-else {
-    $displayname = $name
-}
+$optionsArray = @()
+$continue = $false
+$error = ""
+$vstring = ""
 
 if ($parameters -ne 1) {
 	$cloud = New-CloudStackReports -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
-	$job = Get-CloudStackReports -cloudStack $cloud -command createTemplate -options volumeid=$volume,displaytext=$displayname,name=$name,ostypeid=$ostypeid,passwordenabled=$passwordenabled
-	$jobid = $job.createtemplate.jobid
-    $date = Get-Date
-    $startTime = $date.ToShortTimeString()
-	$mailbody += "Started template creation job <i>$jobid</i> at $startTime for volume <i>$volume</i> <br />`n"
-	do {
-	    $jobStatus = Get-CloudStackReports -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
-	    Start-Sleep -Seconds 5
-        Write-Host -NoNewline "."
-	    }
-	while ($jobStatus.queryasyncjobresultresponse.jobstatus -eq 0)
-	$statusCode = $jobStatus.queryasyncjobresultresponse.jobresultcode
-	if ($statusCode -ne 0) {
-	    $mailbody += "<h1>ERROR</h1> <h2>$jobStatus.queryasyncjobresultresponse.errortext</h2> <br />`n"
-	}
-    $date = Get-Date
-    $endTime = $date.ToShortTimeString()
-    $mailbody += "Completed at $endTime"
-
-    Write-Debug "Mail body: `n$mailbody"
+    $optionsArray += "ostypeid=$ostypeid"
+    $optionsArray += "name=$name"
+    if ($displaytext) {
+	    $optionsArray += "displaytext=$displaytext"
+    }
+    else {
+        $optionsArray += "displaytext=$name"
+    }
     
-    Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Templating Job" -BodyAsHtml -SmtpServer localhost
+    if ($passwordenabled) {
+        $optionsArray += "passwordenabled=$passwordenabled"
+    }
+
+    if ($volume) {
+        $optionsArray += "volumeid=$volume"
+        $vstring = "volume <i>$volume</i>"
+    }
+    if ($snapshot) {
+        $optionsArray += "snapshotid=$snapshot"
+        $vstring = "snapshot <i>$snapshot</i> "
+    }
+    
+    Write-Debug "Options: $optionsArray"
+    
+    if ($snapshot -or $volume){
+        $continue = $true
+    }
+    else{
+        $error = "Neither a snapshot ID or volume ID was specified. Job can not continue."
+    }
+
+    if ($continue -eq $true) {
+	    $job = Get-CloudStackReports -cloudStack $cloud -command createTemplate -options $optionsArray
+	    $jobid = $job.createtemplateresponse.jobid
+        $date = Get-Date
+        $startTime = $date.ToShortTimeString()
+	    $mailbody += "Started template creation job <i>$jobid</i> at $startTime for $vstring<br />`n"
+	    do {
+	        $jobStatus = Get-CloudStackReports -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
+	        Start-Sleep -Seconds 5
+            Write-Host -NoNewline "."
+	        }
+	    while ($jobStatus.queryasyncjobresultresponse.jobstatus -eq 0)
+	    $statusCode = $jobStatus.queryasyncjobresultresponse.jobresultcode
+	    if ($statusCode -ne 0) {
+	        $mailbody += "<h1>ERROR</h1> <h2>$jobStatus.queryasyncjobresultresponse.errortext</h2> <br />`n"
+	    }
+        $date = Get-Date
+        $endTime = $date.ToShortTimeString()
+        $mailbody += "Completed at $endTime"
+
+        Write-Debug "Mail body: `n$mailbody"
+    
+        Send-MailMessage -From "cloud@$hostname" -To $EMails -Body $mailbody -Subject "CloudStack Templating Job" -BodyAsHtml -SmtpServer localhost
+    }
+    else {
+        Write-Error "ERROR: $error"
+    }
 }
 else {
 	Write-Error "Please configure the $env:userprofile\cloud-settings.txt file"
@@ -86,8 +126,8 @@ else {
 # SIG # Begin signature block
 # MIIRpQYJKoZIhvcNAQcCoIIRljCCEZICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUOXuB+2NQRxo4apmFp8Ii4dwF
-# JGOggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUXQpcT197u5QMIJTCGV0tvigD
+# hNWggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
 # EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERp
 # Z2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2Vy
 # dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIw
@@ -166,17 +206,17 @@ else {
 # aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
 # YXRlIE9iamVjdCBDQQICCnYwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFKE5+QWK7B1W/ozDHVko
-# Tf9c+EgmMA0GCSqGSIb3DQEBAQUABIICAFUoPtF80X2I/IDSIF7T+4ltUq7ZWmnV
-# 2d8qbgDf4P6BV0iLWsNW377NDu47INg8TJHTmkar/ctmqZlIoaehe7svL9Ycl96x
-# ysKUZ2lMtEMhTGi2Oor1ktkgIG9To9/4Uv0GItCt5lwJpAkv0iW8Yh4HqGApkaVb
-# WlEUhvxCczgFdUsGDstQlTUddpLeNgOpr3/aLsrE5CBbnt3Zz1stSw6Bi/f4NwQz
-# 8TQVNPCUcJcZNBL/zOf8onsrbWF2MkjLAbtkGWVjSP1ICzE8O7/XbsJ0+8F/98hp
-# Uo0AH1hyq2NCnyLG3mV+UX/P03aIaVPUj2B7t5NptPeP4+YA2UNHuP/OlPcpkvvv
-# 7pb2E3fnCiUrU350SrVVaA86pIboVcPCZVwGFtKb1LHf2+rwvtJXJCxfrhAmKzGu
-# WRIoAuUbBtkWs7A7JztUuL/6zDxtLS1PcK87iMjPctJAqK1Vbz8vYnZMp/aM48Ei
-# FblGtvUi7qnBITYIyKbUykExUZr6B+DG9ZN+OrFZvxm9n6QqjmgkNtKu0vQ/SGh+
-# WTKNr4+NMQBB/OeamMs48FqtqbkEY93WtofyvZl6h79g5E1bx0KgjRMEsD4wfEex
-# onTxoZjRD4fH2FklZmEOnURCcPuN6k7VbaWE/rdkU9wkVmBzRNuU2HYhNoxS2DXS
-# mU4tANELI3KT
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFO4mV0jpf5PhdEea4/r7
+# YM3bSDPYMA0GCSqGSIb3DQEBAQUABIICAIn8ZjTQBb/dH288qdHNCVBqaFsI8D/G
+# YdTwrf2Uk+kN4tNFp/qQXbHRnWRaLzn0hg9VRnlDXwSj5vzf9nzmDFVWlgLG2kIA
+# rQoM3YpVumGFzfeFH/bZhO0AB0qXEgEf67WqvrcGD9iXlN32JW1x+b92kvlNrgZ3
+# Pi0+4NRWOSPCNHI9XWfu5MZZOVgPsUAYFtiiuBCTt8goGpRA3ZiwfR87SNMd3tv4
+# qZaji4+rMBF1SJ4JuXicN8Wv6yYDQgjA/mbWp2h2746NV7dXaTTf2Z/QC0/5jiRm
+# 54PtW7ojpW1LEVcFTgVLIzNGPeZCMkJFUnvowW1Wy0nZYxmKn6PUUQd6MnYRKq7O
+# 3xPiFCdZt8sYqq0sM91AqFkxT7/LKzRyKx44N37/HYRhSKLcUjZ/MQRaWfkQncri
+# r0limhrW235PePBzBwCH7mVUNzio2NUp31AjLo6pYPotpl7A4alrvrDDS0aoKtxH
+# hOHHfs09k5pPjANa3Z8H7p+acUTq1akeQ2C8Zo4YNrChMAfwgB/tJcbWjB2gPAgH
+# zsAoU3IwDy1BNeZrkZtg/fyl6q5NrECAnMHPm5abcTcpVK/f5Mk8ez45mi0Vh84c
+# 5rUVAPAXqpTG4YE/qw/MtmqSPboNex6GueUTV6wrWzGxjROwKWEZg5B1YdrY1dDA
+# EouEwhMGPqgh
 # SIG # End signature block
