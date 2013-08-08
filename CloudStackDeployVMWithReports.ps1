@@ -47,18 +47,18 @@ $mailbody = ""
 $hostname = $env:COMPUTERNAME
 
 if ($parameters -ne 1) {
-  $cloud = New-CloudStack -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
+  $cloud = New-CloudStackReports -apiEndpoint $parameters[0] -apiPublicKey $parameters[1] -apiSecretKey $parameters[2]
   $date = Get-Date
   $startTime = $date.ToShortTimeString()
   if($securitygroupids) {
     $sids = $securitygroupids | Sort-Object
     $sids = $sids -join "%2c"
-    $job = Get-CloudStack -cloudStack $cloud -command deployVirtualMachine -options serviceofferingid=$serviceofferingid,zoneid=$zoneid,securitygroupids=$sids,templateid=$templateid
+    $job = Get-CloudStackReports -cloudStack $cloud -command deployVirtualMachine -options serviceofferingid=$serviceofferingid,zoneid=$zoneid,securitygroupids=$sids,templateid=$templateid
   }
   elseif($networkids) {
     $nids = $networkids | Sort-Object
     $nids = $nids -join "%2c"
-    $job = Get-CloudStack -cloudStack $cloud -command deployVirtualMachine -options serviceofferingid=$serviceofferingid,zoneid=$zoneid,networkids=$nids,templateid=$templateid
+    $job = Get-CloudStackReports -cloudStack $cloud -command deployVirtualMachine -options serviceofferingid=$serviceofferingid,zoneid=$zoneid,networkids=$nids,templateid=$templateid
   }
   else {
     Write-Error "No network or security groups specified."
@@ -69,7 +69,7 @@ if ($parameters -ne 1) {
     $mailbody += "Started VM Deployment job <i>$jobid</i> at $startTime for template <i>$templateid</i>.<br />`n"
     do {
       Write-Host -NoNewline "."
-      $jobStatus = Get-CloudStack -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
+      $jobStatus = Get-CloudStackReports -cloudStack $cloud -command queryAsyncJobResult -options jobid=$jobid
       Start-Sleep -Seconds 2
     }
     while ($jobStatus.queryasyncjobresultresponse.jobstatus -eq 0)
@@ -104,8 +104,8 @@ else {
 # SIG # Begin signature block
 # MIIRpQYJKoZIhvcNAQcCoIIRljCCEZICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUiKre9UezNYVCDjy1Al1gb1TQ
-# dVOggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUoFwvVaikC5aLcuYOe9HGPncI
+# OpWggg3aMIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQG
 # EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERp
 # Z2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2Vy
 # dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIw
@@ -184,17 +184,17 @@ else {
 # aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
 # YXRlIE9iamVjdCBDQQICCnYwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFCjCV0FOk9FXoWSd23OU
-# UOqUmNGiMA0GCSqGSIb3DQEBAQUABIICAHxpcwKiFqToK9/MW2J8MLjunILM0ywq
-# uN5XVnGSGDavbAESmJk+ufSl5wIStPTEGY2rKvo6B6z1XtrAMF5eLjy5lzEyYO1L
-# obruVQ8DKCGdyQoH65z8HWiVf/JBeiF6LWb19v1PWJ7uO0t20pSrqjWagcXXi3kc
-# TcYZOELplP0tv0WoJ9JmDcvXcbJyJIwA2aPEBjzVLy8FVOkn05OqQvMZpcMfMz/i
-# EyhsmwSoRnaThpSD0ViY4hRdeDajcolr7OxDgSM46nqv7mRVPc9NM+cPVdW0lfOs
-# 5O9kSnUZxWF1dicPMOyMbWX8ngq7I5AIccq0nvJaCZXLZNQrXTLa0RaDqmA8KP0W
-# hfPd0gV2LrxwGCmSBtpVlc48sjTAM4VY0HHuP2TQnXYlTVO+34H1Uo0wVxIlwmdn
-# sjFtgd3cUMgefOZXozezaOzm+o2niub+zbp0rK9xoXbr6WmqCIpvw0giccmwYASX
-# 4fM93vSoIqicl1p+if2dcBFW0R4+Dlp21jUjSQJgBFEHWi6fXoFrwbTlUf1ziRhM
-# vKzBMnAV0COUzRnOZj+xaY+Xm98twu6ssdhJORxh3rH3qbrVRQNTFZBSG3UBUOC/
-# pXYKlWEJw8QhtlIDAJ+qdIWBCJW4hValBiJRu0pYvhu2hZbjdtWJsQ3qCsh34+eB
-# dqa1H/Y2i5Fx
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFPnWEr8aZsEtHUPdu7Ql
+# K1NWkSIyMA0GCSqGSIb3DQEBAQUABIICAHDqrziEgFL1cZ+tY0saSyhbTsRWdPIG
+# 6YLR0pkdg+kQ/vgPq+JwKhS7itmgQKDqfeO0LKbT6isSFCo9UWTS062ZFXhnkhs9
+# dRUHAt9NxVBIiW0gfbeW9E+qXcOOjJoag8a4GrxKgW4EtRlGu5qU3nn6+LBHLBQp
+# kIa8m7w4n5UbllvAJLJhHYVcgHJoobnru5rVSYLkYpdc+tYsfoY2y/2impQyc3zX
+# 4zA8l8LlpEHcHiowo0TL9RmJsvCTLQRlJgeK1u1vSzmpVb7aIFiXMlURjSd/MHIc
+# kWyviaNIpaHYLcxN1M/OYOYXzkglwt05ubbRq2YFSgSfJg/S1M9762YvvYKsz/WV
+# A2EmEsYkT0szetMwjylf+Jbly3iciFzWFRpvbxgVt0b1vNO0pldGb4MbNJqGbFSD
+# jdCfvlMvqCv//puuYX0FB089WTWtOnHmG3X1iB0ofZOKNapkiAurmvD23BQxbHGo
+# V35oXDbWgKcYT87LhZ69Fg8Jojlq5TJnRYtrf0OXhiMlqjIspXw0L4sFYYe7mYfO
+# WCIamKtTuThDSZlVZOcMfRvLqeBAaDB1tLgW77XypkfXqYQQU2bpMic+wkyqcVdS
+# YBiGJPLVSsb3YOyrYwCM0eMT/6rFBpOVP5FT/TmKwAjgx8kbCrzrse3uCTeKd/zh
+# NQJ2Caf38Szf
 # SIG # End signature block
